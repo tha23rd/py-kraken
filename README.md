@@ -9,7 +9,7 @@ A python module to download files from KrakenFiles
 
 ## Module Use
 ```python
-from pykraken import Kraken
+from pykraken.kraken import Kraken
 
 kraken_link = "https://krakenfiles.com/view/dbe8ee9c34/file.html"
 
