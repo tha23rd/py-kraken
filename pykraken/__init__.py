@@ -1,6 +1,5 @@
 from . import kraken
 
-
 __all__ = [
-    'kraken',
+    "kraken",
 ]
