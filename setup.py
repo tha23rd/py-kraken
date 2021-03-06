@@ -20,7 +20,7 @@ setup_args = dict(
 )
 
 install_requires = [
-    'bs4',
+    'beautifulsoup4',
     'certifi',
     'chardet',
     'idna',
