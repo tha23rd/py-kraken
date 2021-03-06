@@ -111,6 +111,7 @@ env.bak/
 venv.bak/
 
 .idea/**/*
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -127,4 +128,8 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
+<<<<<<< HEAD
 .pyre/
+=======
+.pyre/
+>>>>>>> 66ca27e0ae080debb3428356f419e6fd5ec739ae
