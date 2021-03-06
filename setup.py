@@ -5,7 +5,7 @@ with open('README.md') as readme_file:
 
 setup_args = dict(
     name='py-kraken',
-    version='1.4',
+    version='1.5',
     packages=find_packages(),
     url='https://github.com/tha23rd/py-kraken',
     license='MIT',
@@ -20,7 +20,6 @@ setup_args = dict(
 )
 
 install_requires = [
-    'beautifulsoup4',
     'bs4',
     'certifi',
     'chardet',
