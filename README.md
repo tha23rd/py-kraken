@@ -4,6 +4,9 @@ A python module to download files from KrakenFiles
 ## Install
 `pip install py-kraken`
 
+## Mod
+* Modded to download using aria2 with command line command_line_aria2.py. (Aria2 RPC config is in pykarken\pyaria2.py) 
+
 ## Command Line Use
 `kraken-download https://krakenfiles.com/view/dbe8ee9c34/file.html`
 
