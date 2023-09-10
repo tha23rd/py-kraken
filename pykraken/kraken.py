@@ -4,6 +4,7 @@ import shutil
 
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 
 class HashNotFoundException(Exception):
@@ -25,6 +26,8 @@ class Kraken:
     URL_KEY = "url"
 
     KRAKEN_BASE_URL = "https://krakenfiles.com"
+
+    BLOCK_SIZE = 1024
 
     def __init__(self, session: requests.Session = requests.session()):
         self.session = session
@@ -54,7 +57,7 @@ class Kraken:
         }
 
         dl_link_resp = self.session.post(
-            f"{self.KRAKEN_BASE_URL}/download/{hash}", data=payload, headers=headers
+            f"{self.KRAKEN_BASE_URL}/download/{dl_hash}", data=payload, headers=headers
         )
         dl_link_json = dl_link_resp.json()
 
@@ -71,7 +74,15 @@ class Kraken:
         with self.session.get(dl_link, headers=self._base_headers, stream=True) as r:
             _, params = cgi.parse_header(r.headers["content-disposition"])
             fname = params["filename"]
+            total_size_in_bytes = int(r.headers.get('content-length', 0))
+
+            progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+
             with open(os.path.join(path, fname), "wb") as f:
-                shutil.copyfileobj(r.raw, f)
+                for data in r.iter_content(self.BLOCK_SIZE):
+                    progress_bar.update(len(data))
+                    f.write(data)
+
+            progress_bar.close()
 
             return os.path.join(path, fname)
