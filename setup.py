@@ -5,7 +5,7 @@ with open('README.md') as readme_file:
 
 setup_args = dict(
     name='py-kraken',
-    version='1.5',
+    version='1.7',
     packages=find_packages(),
     url='https://github.com/tha23rd/py-kraken',
     license='MIT',
