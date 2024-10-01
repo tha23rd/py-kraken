@@ -54,7 +54,7 @@ class Kraken:
         }
 
         dl_link_resp = self.session.post(
-            f"{self.KRAKEN_BASE_URL}/download/{hash}", data=payload, headers=headers
+            f"{self.KRAKEN_BASE_URL}/download/{dl_hash}", data=payload, headers=headers
         )
         dl_link_json = dl_link_resp.json()
 
