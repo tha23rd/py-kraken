@@ -1,3 +1,5 @@
+"""Core module for interacting with the KrakenFiles service."""
+
 import cgi
 import os
 import shutil
@@ -7,16 +9,49 @@ from bs4 import BeautifulSoup
 
 
 class HashNotFoundException(Exception):
+    """Raised when the file hash cannot be extracted from a KrakenFiles page.
+
+    This typically indicates that the page URL is invalid or the page structure
+    has changed.
+
+    Args:
+        exception: A description of the error.
+    """
+
     def __init__(self, exception):
         super(exception)
 
 
 class LinkPostFailure(Exception):
+    """Raised when the KrakenFiles API fails to return a download URL.
+
+    This can occur when the file has been removed or the download token has
+    expired.
+
+    Args:
+        exception: A description of the error.
+    """
+
     def __init__(self, exception):
         super(exception)
 
 
 class Kraken:
+    """Client for downloading files from KrakenFiles.
+
+    Handles page scraping, token extraction, and file download from
+    krakenfiles.com URLs.
+
+    Args:
+        session: An optional ``requests.Session`` to use for HTTP requests.
+            Defaults to a new session.
+
+    Example::
+
+        k = Kraken()
+        k.download_file("https://krakenfiles.com/view/abc123/file.html")
+    """
+
     _base_headers = {
         "content-type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
         "cache-control": "no-cache",
@@ -30,7 +65,22 @@ class Kraken:
         self.session = session
 
     def get_download_link(self, page_link: str) -> str:
+        """Resolve a KrakenFiles page URL to a direct download link.
 
+        Scrapes the given page for the file hash and download token, then
+        posts to the KrakenFiles API to obtain the direct download URL.
+
+        Args:
+            page_link: The full KrakenFiles page URL
+                (e.g. ``https://krakenfiles.com/view/dbe8ee9c34/file.html``).
+
+        Returns:
+            The direct download URL as a string.
+
+        Raises:
+            HashNotFoundException: If the file hash cannot be found on the page.
+            LinkPostFailure: If the API does not return a download URL.
+        """
         page_resp = self.session.get(page_link)
         soup = BeautifulSoup(page_resp.text, "lxml")
 
@@ -66,6 +116,23 @@ class Kraken:
             )
 
     def download_file(self, page_link: str, path: str = "./") -> str:
+        """Download a file from a KrakenFiles page URL.
+
+        Resolves the page URL to a direct download link, then streams the
+        file to the specified local directory.
+
+        Args:
+            page_link: The full KrakenFiles page URL.
+            path: Local directory to save the downloaded file. Defaults to
+                the current working directory.
+
+        Returns:
+            The full path to the saved file.
+
+        Raises:
+            HashNotFoundException: If the file hash cannot be found on the page.
+            LinkPostFailure: If the API does not return a download URL.
+        """
         dl_link = self.get_download_link(page_link)
 
         with self.session.get(dl_link, headers=self._base_headers, stream=True) as r:
